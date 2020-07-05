@@ -23,7 +23,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef __SIMPLE_COAP_H__
 #define __SIMPLE_COAP_H__
 
-#include <functional>
+
 #include "Udp.h"
 #ifndef COAP_MAX_CALLBACK
 #define COAP_MAX_CALLBACK 10
@@ -36,7 +36,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COAP_MAX_OPTION_NUM 10
 #endif
 #ifndef COAP_BUF_MAX_SIZE
-#define COAP_BUF_MAX_SIZE 1024
+#define COAP_BUF_MAX_SIZE 64
 #endif
 #define COAP_DEFAULT_PORT 5683
 
@@ -130,7 +130,7 @@ class CoapPacket {
 
 		void addOption(uint8_t number, uint8_t length, uint8_t *opt_payload);
 };
-typedef std::function<void(CoapPacket &, IPAddress, int)> CoapCallback;
+typedef void (*CoapCallback)(CoapPacket &, IPAddress, int);
 
 class CoapUri {
     private:
@@ -187,7 +187,7 @@ class Coap {
         uint16_t sendResponse(IPAddress ip, int port, uint16_t messageid, const char *payload);
         uint16_t sendResponse(IPAddress ip, int port, uint16_t messageid, const char *payload, size_t payloadlen);
         uint16_t sendResponse(IPAddress ip, int port, uint16_t messageid, const char *payload, size_t payloadlen, COAP_RESPONSE_CODE code, COAP_CONTENT_TYPE type, const uint8_t *token, int tokenlen);
-        
+
         uint16_t get(IPAddress ip, int port, const char *url);
         uint16_t put(IPAddress ip, int port, const char *url, const char *payload);
         uint16_t put(IPAddress ip, int port, const char *url, const char *payload, size_t payloadlen);
