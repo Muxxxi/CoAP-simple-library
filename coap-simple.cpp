@@ -92,16 +92,15 @@ uint16_t Coap::sendPacket(CoapPacket &packet, IPAddress ip, int port) {
 
     // make payload
     if (packet.payloadlen > 0) {
-        if ((packetSize + 1 + packet.payloadlen) >= COAP_BUF_MAX_SIZE) {
-            return 0;
-        }
         *p++ = 0xFF;
-        memcpy(p, packet.payload, packet.payloadlen);
-        packetSize += 1 + packet.payloadlen;
+        packetSize += 1;
     }
 
     _udp->beginPacket(ip, port);
     _udp->write(buffer, packetSize);
+    if (packet.payloadlen > 0) {
+      _udp->write(packet.payload, packet.payloadlen);
+    }
     _udp->endPacket();
 
     return packet.messageid;
