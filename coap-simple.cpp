@@ -213,11 +213,11 @@ int Coap::parseOption(CoapOption *option, uint16_t *running_delta, uint8_t **buf
 
 bool Coap::loop() {
 
-    uint8_t buffer[COAP_BUF_MAX_SIZE];
     int32_t packetlen = _udp->parsePacket();
 
-    while (packetlen > 0) {
-        packetlen = _udp->read(buffer, packetlen >= COAP_BUF_MAX_SIZE ? COAP_BUF_MAX_SIZE : packetlen);
+    while (packetlen > 0 && packetlen <= COAP_BUF_MAX_SIZE) {
+        uint8_t buffer[packetlen];
+        packetlen = _udp->read(buffer, packetlen);
 
         CoapPacket packet;
 
