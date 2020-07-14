@@ -215,8 +215,8 @@ bool Coap::loop() {
 
     int32_t packetlen = _udp->parsePacket();
 
-    while (packetlen > 0 && packetlen <= COAP_BUF_MAX_SIZE) {
-        uint8_t buffer[packetlen];
+    while (packetlen > 0 && packetlen < COAP_BUF_MAX_SIZE) {
+        uint8_t buffer[packetlen+1];
         packetlen = _udp->read(buffer, packetlen);
 
         CoapPacket packet;
@@ -265,7 +265,8 @@ bool Coap::loop() {
 
         if (packet.type == COAP_ACK) {
             // call response function
-            resp(packet, _udp->remoteIP(), _udp->remotePort());
+            String s;
+            resp(packet, _udp->remoteIP(), _udp->remotePort(), s);
 
         } else {
 
@@ -286,7 +287,7 @@ bool Coap::loop() {
                 sendResponse(_udp->remoteIP(), _udp->remotePort(), packet.messageid, NULL, 0,
                         COAP_NOT_FOUNT, COAP_NONE, NULL, 0);
             } else {
-                uri.find(url)(packet, _udp->remoteIP(), _udp->remotePort());
+                uri.find(url)(packet, _udp->remoteIP(), _udp->remotePort(), url);
             }
         }
 
