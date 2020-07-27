@@ -1,5 +1,6 @@
 #include "coap-simple.h"
 #include "Arduino.h"
+#include <ArduinoJson.h>
 
 #define LOGGING
 
@@ -99,7 +100,7 @@ uint16_t Coap::sendPacket(CoapPacket &packet, IPAddress ip, int port) {
     _udp->beginPacket(ip, port);
     _udp->write(buffer, packetSize);
     if (packet.payloadlen > 0) {
-      _udp->write(packet.payload, packet.payloadlen);
+      serializeJson(*(JsonDocument*)packet.payload, *_udp);
     }
     _udp->endPacket();
 
